@@ -1,0 +1,21 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /chatbot
+
+slack:
+  signing-secret: \${SLACK_SIGNING_SECRET}
+  bot-user-oauth-acces-token: \${BOT_USER_OAUTH_ACCESS_TOKEN}
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+---
+
+spring.profiles: default
+
+grpc:
+  chatbot-service-properties:
+    host: localhost
+    port: 50051
