@@ -16,5 +16,6 @@ message ChatbotResponse {
 }
 
 service ChatbotService {
+    // throws StatusRuntimeException
     rpc chat(ChatbotRequest) returns (ChatbotResponse) {}
 }
