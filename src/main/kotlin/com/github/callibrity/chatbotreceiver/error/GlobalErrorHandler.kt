@@ -18,6 +18,10 @@ class GlobalErrorHandler: ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> = ex
         .message
+        .also {
+            logger.info("Error message: $this")
+            logger.error(ex.printStackTrace())
+        }
         .run {
             handleExceptionInternal(
                 ex,

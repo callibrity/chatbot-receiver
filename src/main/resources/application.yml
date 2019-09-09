@@ -12,10 +12,18 @@ spring:
     allow-bean-definition-overriding: true
 
 ---
-
 spring.profiles: default
 
 grpc:
   chatbot-service-properties:
     host: localhost
     port: 50051
+
+---
+spring.profiles: test
+
+# Running on GCP
+grpc:
+  chatbot-service-properties:
+    host: 35.245.228.11
+    port: 80

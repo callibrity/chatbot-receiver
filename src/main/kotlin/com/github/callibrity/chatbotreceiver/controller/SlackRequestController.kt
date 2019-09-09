@@ -5,6 +5,7 @@ import com.github.callibrity.chatbotreceiver.service.grpc.ChatBotService
 import com.github.callibrity.chatbotreceiver.utils.JacksonMapper
 import com.github.callibrity.chatbotreceiver.utils.SlackRequestVerifier
 import com.google.common.io.ByteStreams
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,6 +19,7 @@ class SlackRequestController(
     private val jacksonMapper: JacksonMapper,
     private val chatBotService: ChatBotService
 ) {
+    private val logger = LoggerFactory.getLogger(SlackRequestController::class.java)
 
     @PostMapping("/api/chatMessage")
     fun chat(
@@ -30,13 +32,8 @@ class SlackRequestController(
         return when (botEventRequest.type) {
             "url_verification" -> ResponseEntity(botEventRequest.challenge!!, HttpStatus.OK)
             "event_callback" -> {
-                if (slackRequestVerifier.isVerifiedSlackRequest(
-                        headers["x-slack-signature"]!!,
-                        headers["x-slack-request-timestamp"]!!,
-                        bodyAsByteArray
-                    )) {
-                    val event = botEventRequest.event!!
-                    chatBotService.chat(event.text!!, event.user!!, event.channel!!)
+                if (isVerifiedRequest(headers, bodyAsByteArray)) {
+                    chatBotService.chat(botEventRequest.event!!)
                     ResponseEntity("Ok", HttpStatus.OK)
                 } else {
                     ResponseEntity("Not Found", HttpStatus.NOT_FOUND)
@@ -45,4 +42,14 @@ class SlackRequestController(
             else -> ResponseEntity(HttpStatus.NO_CONTENT)
         }
     }
+
+    private fun isVerifiedRequest(
+        headers: Map<String, String>,
+        rawRequestBody: ByteArray
+    ): Boolean =
+        slackRequestVerifier.isVerifiedSlackRequest(
+            headers["x-slack-signature"]!!,
+            headers["x-slack-request-timestamp"]!!,
+            rawRequestBody
+        )
 }
