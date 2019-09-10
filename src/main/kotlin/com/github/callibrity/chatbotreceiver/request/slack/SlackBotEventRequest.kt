@@ -3,7 +3,7 @@ package com.github.callibrity.chatbotreceiver.request.slack
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class Event(
+data class Event(
     val type: String,
     val subtype: String?,
     val text: String?,
@@ -12,7 +12,7 @@ class Event(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class SlackBotEventRequest (
+data class SlackBotEventRequest (
     val type: String,
     val challenge: String?,
     val event: Event?

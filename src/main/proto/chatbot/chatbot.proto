@@ -5,6 +5,10 @@ package chatbot;
 option java_multiple_files=true;
 option java_package="com.proto.chatbot";
 
+message HeartBeat {
+    int32 number = 1;
+}
+
 message ChatbotRequest {
     string question = 1;
     string user = 2;
@@ -16,6 +20,7 @@ message ChatbotResponse {
 }
 
 service ChatbotService {
-    // throws StatusRuntimeException
-    rpc chat(ChatbotRequest) returns (ChatbotResponse) {}
+    rpc heartBeat (HeartBeat) returns (HeartBeat);
+
+    rpc chat (ChatbotRequest) returns (ChatbotResponse);
 }

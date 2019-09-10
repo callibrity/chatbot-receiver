@@ -21,7 +21,7 @@ grpc:
 
 logging:
   level:
-    root: TRACE
+    root: DEBUG
     com.github.callibrity.chatbotreceiver: DEBUG
 
 ---
@@ -30,10 +30,9 @@ spring.profiles: test
 # Running on GCP
 grpc:
   chatbot-service-properties:
-    host: 35.245.228.11
+    host: 35.230.188.16
     port: 80
 
 logging:
   level:
-    root: DEBUG
     com.github.callibrity.chatbotreceiver: INFO
