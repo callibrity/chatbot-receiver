@@ -30,9 +30,10 @@ spring.profiles: test
 # Running on GCP
 grpc:
   chatbot-service-properties:
-    host: 35.230.188.16
-    port: 80
+    host: chatbot-service.default
+    port: 50051
 
 logging:
   level:
+    root: INFO
     com.github.callibrity.chatbotreceiver: INFO

@@ -9,7 +9,7 @@ plugins {
 apply plugin: "idea"
 
 group = "com.github.callibrity"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {

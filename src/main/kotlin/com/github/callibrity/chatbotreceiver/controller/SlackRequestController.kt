@@ -32,10 +32,13 @@ class SlackRequestController(
         return when (botEventRequest.type) {
             "url_verification" -> ResponseEntity(botEventRequest.challenge!!, HttpStatus.OK)
             "event_callback" -> {
+                logger.info("Slack request pre verification...")
                 if (isVerifiedRequest(headers, bodyAsByteArray)) {
+                    logger.info("Slack request verified...")
                     chatBotService.chat(botEventRequest.event!!)
                     ResponseEntity("Ok", HttpStatus.OK)
                 } else {
+                    logger.info("Slack request not verified...")
                     ResponseEntity("Not Found", HttpStatus.NOT_FOUND)
                 }
             }
