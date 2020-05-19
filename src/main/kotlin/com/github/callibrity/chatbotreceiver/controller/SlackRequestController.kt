@@ -35,6 +35,7 @@ class SlackRequestController(
                 logger.info("Slack request pre verification...")
                 if (isVerifiedRequest(headers, bodyAsByteArray)) {
                     logger.info("Slack request verified...")
+                    logger.info("Slack request text: ${botEventRequest.event?.text}")
                     chatBotService.chat(botEventRequest.event!!)
                     ResponseEntity("Ok", HttpStatus.OK)
                 } else {

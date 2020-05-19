@@ -17,12 +17,13 @@ class ChatBotService(
 
     private val chatbotRequestBuilder = ChatbotRequest.newBuilder()
     private val heartBeatRequestBuilder = HeartBeat.newBuilder()
+    private val filterRegex = Regex("<[@a-zA-Z0-9]*>")
 
     private val logger = LoggerFactory.getLogger(ChatBotService::class.java)
 
     fun chat(event: Event): ChatbotResponse = chatbotRequestBuilder
         .also { logger.info("User: ${event.user}, Channel: ${event.channel}") }
-        .setQuestion(event.text)
+        .setQuestion(filterRegex.replace(event.text ?: "Hi.", ""))
         .setUser(event.user)
         .setChannel(event.channel)
         .build()

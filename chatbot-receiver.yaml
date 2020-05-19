@@ -25,6 +25,12 @@ spec:
     spec:
       containers:
         - name: chatbot-receiver
-          image: aiqingyuyan/chatbot-receiver:latest
+          # e.g. aiqingyuyan/chatbot-receiver:v0.0.2
+          image: <image placeholder>
+          env:
+          - name: SLACK_SIGNING_SECRET
+            value: $SLACK_SIGNING_SECRET
+          - name: BOT_USER_OAUTH_ACCESS_TOKEN
+            value: $BOT_USER_OAUTH_ACCESS_TOKEN
           ports:
             - containerPort: 8000
