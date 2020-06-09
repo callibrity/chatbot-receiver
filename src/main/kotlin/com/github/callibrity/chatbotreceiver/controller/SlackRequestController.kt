@@ -1,7 +1,7 @@
 package com.github.callibrity.chatbotreceiver.controller
 
 import com.github.callibrity.chatbotreceiver.request.slack.SlackBotEventRequest
-import com.github.callibrity.chatbotreceiver.service.grpc.ChatBotService
+import com.github.callibrity.chatbotreceiver.service.ChatBotService
 import com.github.callibrity.chatbotreceiver.utils.JacksonMapper
 import com.github.callibrity.chatbotreceiver.utils.SlackRequestVerifier
 import com.google.common.io.ByteStreams

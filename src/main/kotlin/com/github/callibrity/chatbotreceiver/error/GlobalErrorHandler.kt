@@ -1,7 +1,10 @@
 package com.github.callibrity.chatbotreceiver.error
 
-import io.grpc.StatusRuntimeException
-import org.springframework.http.HttpHeaders
+import com.github.callibrity.chatbotreceiver.response.ApiResponse
+import com.github.callibrity.chatbotreceiver.response.Error as ApiError
+import com.github.callibrity.chatbotreceiver.response.Meta
+import io.grpc.Status
+import io.grpc.StatusException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -12,9 +15,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 class GlobalErrorHandler: ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(StatusRuntimeException::class)
+    @ExceptionHandler(StatusException::class)
     fun handleStatusRuntimeException(
-        ex: StatusRuntimeException,
+        ex: StatusException,
         request: WebRequest
     ): ResponseEntity<Any> = ex
         .message
@@ -23,12 +26,43 @@ class GlobalErrorHandler: ResponseEntityExceptionHandler() {
             logger.error(ex.printStackTrace())
         }
         .run {
-            handleExceptionInternal(
-                ex,
-                this,
-                HttpHeaders(),
-                HttpStatus.BAD_REQUEST,
-                request
-            )
+          handleException(ex)
         }
+
+    private fun handleException(ex: StatusException): ResponseEntity<Any> {
+      logger.error(
+        "${ex.status.description}: ${ex.message}",
+        ex.cause
+      )
+
+      val body = ApiResponse(
+        data = null,
+        meta = Meta.DEFAULT_META,
+        errors = listOf(
+          ApiError(
+            code = ex.status.code.toString(),
+            cause = ex.message,
+            timestamp = System.currentTimeMillis()
+          )
+        )
+      )
+
+      return when (ex.status) {
+        Status.INTERNAL ->
+          ResponseEntity(
+            body,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          )
+        Status.DEADLINE_EXCEEDED ->
+          ResponseEntity(
+            body,
+            HttpStatus.REQUEST_TIMEOUT
+          )
+        else ->
+          ResponseEntity(
+            body,
+            HttpStatus.I_AM_A_TEAPOT
+          )
+      }
+    }
 }
