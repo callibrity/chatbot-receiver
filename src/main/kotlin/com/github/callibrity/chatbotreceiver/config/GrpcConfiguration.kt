@@ -21,7 +21,7 @@ class ChatbotServiceProperties {
 }
 
 @Configuration
-@ConfigurationProperties("grpc.chatbot-client")
+@ConfigurationProperties("grpc.chatbot-client-properties")
 class ChatbotClientProperties {
     lateinit var threadpool: String
 }

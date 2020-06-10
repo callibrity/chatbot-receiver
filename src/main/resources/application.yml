@@ -18,7 +18,7 @@ grpc:
   chatbot-service-properties:
     host: localhost
     port: 50051
-  chatbot-client:
+  chatbot-client-properties:
     threadpool: 1
 
 logging:
