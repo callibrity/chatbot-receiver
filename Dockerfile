@@ -7,7 +7,7 @@ ENV spring_profiles_active=test
 
 EXPOSE 8000
 
-COPY build/libs/chatbot-receiver-0.0.1.jar /app/chatbot-receiver.jar
+COPY build/libs/chatbot-receiver.jar /app/chatbot-receiver.jar
 
 WORKDIR /app/
 

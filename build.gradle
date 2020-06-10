@@ -28,7 +28,6 @@ plugins {
 }
 
 group = "com.github.callibrity"
-version = "0.0.1"
 
 repositories {
 	mavenCentral()
@@ -99,10 +98,3 @@ idea {
 		sourceDirs += file("${projectDir}/src/generated/main/grpc")
 	}
 }
-
-//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-//	kotlinOptions {
-//		freeCompilerArgs = ["-Xjsr305=strict"]
-//		jvmTarget = "1.8"
-//	}
-//}
