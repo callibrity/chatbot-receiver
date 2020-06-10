@@ -2,8 +2,14 @@ package com.github.callibrity.chatbotreceiver.config
 
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.asExecutor
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
@@ -15,24 +21,40 @@ class ChatbotServiceProperties {
 }
 
 @Configuration
+@ConfigurationProperties("grpc.chatbot-client-properties")
+class ChatbotClientProperties {
+    lateinit var threadpool: String
+}
+
+@Configuration
 class GrpcConfiguration(
-    private val chatbotServiceProperties: ChatbotServiceProperties
+    private val chatbotServiceProperties: ChatbotServiceProperties,
+    private val chatbotClientProperties: ChatbotClientProperties
 ) {
 
-    lateinit var channelForChatbotService: ManagedChannel
+    private val logger = LoggerFactory.getLogger(GrpcConfiguration::class.java)
 
-    @PostConstruct
-    fun initializeChannel() {
-        println("Invoked")
-        channelForChatbotService = ManagedChannelBuilder
-            .forAddress(chatbotServiceProperties.host, chatbotServiceProperties.port.toInt())
-            .usePlaintext()
-            .build()
-    }
+    private var dispatcher: ExecutorCoroutineDispatcher = Executors
+      .newFixedThreadPool(chatbotClientProperties.threadpool.toInt())
+      .asCoroutineDispatcher()
+
+    var channel: ManagedChannel = ManagedChannelBuilder
+      .forAddress(
+        chatbotServiceProperties.host,
+        chatbotServiceProperties.port.toInt()
+      )
+      .usePlaintext()
+      .executor(dispatcher.asExecutor())
+      .build()
 
     @PreDestroy
-    fun shutDownChannel() {
-        println("Shutting channel down")
-        channelForChatbotService.shutdown()
+    fun close() {
+        logger.info("Shutting down service channel...")
+        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
+        logger.info("service channel shut down")
+
+        logger.info("Closing coroutine dispatcher...")
+        dispatcher.close()
+        logger.info("coroutine dispatcher closed")
     }
 }
