@@ -1,13 +1,20 @@
 buildscript {
-	ext.kotlinVersion = '1.3.72'
-	ext.coroutinesVersion = "1.3.7"
-	ext.protobufPlugInVersion = '0.8.12'
-	ext.protobufVersion = '3.12.2'
-	ext.grpcVersion = '1.29.0'
-	ext.grpcKotlinVersion = '0.1.3'
+	ext {
+		kotlinVersion = '1.3.72'
+		coroutinesVersion = "1.3.7"
+		protobufPlugInVersion = '0.8.12'
+		protobufVersion = '3.12.2'
+		grpcVersion = '1.29.0'
+		grpcKotlinVersion = '0.1.3'
+		springBootVersion = '2.3.1.RELEASE'
+		springDependencyManagementVersion = '1.0.9.RELEASE'
+		springmockkVersion = '2.0.2'
+		swaggerVersion = '2.10.5'
+	}
 
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
 
 	dependencies {
@@ -17,8 +24,8 @@ buildscript {
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.1.7.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 	id 'com.google.protobuf' version "${protobufPlugInVersion}"
 	id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
 	id 'org.jetbrains.kotlin.plugin.spring' version "${kotlinVersion}"
@@ -28,6 +35,7 @@ plugins {
 }
 
 group = "com.github.callibrity"
+java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
 	mavenCentral()
@@ -56,26 +64,24 @@ protobuf {
 	}
 }
 
-compileKotlin {
-	kotlinOptions.jvmTarget = '1.8'
-}
-
-compileTestKotlin {
-	kotlinOptions.jvmTarget = "1.8"
-}
-
 dependencies {
-	implementation "org.springframework.boot:spring-boot-starter-web"
-	implementation "org.springframework.boot:spring-boot-starter-webflux"
-	implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+	implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
 
-	implementation "org.jetbrains.kotlin:kotlin-reflect"
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$coroutinesVersion"
 
-	testImplementation "org.springframework.boot:spring-boot-starter-test"
-	testImplementation "io.projectreactor:reactor-test"
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+	}
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+	testImplementation "com.ninja-squad:springmockk:${springmockkVersion}"
+	testImplementation 'io.projectreactor:reactor-test'
+
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 	// grpc
 	implementation "com.google.protobuf:protobuf-java:$protobufVersion"
@@ -86,10 +92,22 @@ dependencies {
 	implementation "io.grpc:grpc-kotlin-stub:$grpcKotlinVersion"
 	implementation "io.grpc:grpc-services:$grpcVersion"
 
-	compile group: "com.google.inject", name: "guice", version: "4.2.2"
+	compile group: 'com.google.inject', name: 'guice', version: '4.2.2'
 
-	compile group: "io.springfox", name: "springfox-swagger2", version: "2.9.2"
-	compile group: "io.springfox", name: "springfox-swagger-ui", version: "2.9.2"
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
+	compile group: 'io.springfox', name: 'springfox-spring-webflux', version: "${swaggerVersion}"
+}
+
+tasks.withType(Test) {
+	useJUnitPlatform()
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+	kotlinOptions {
+		freeCompilerArgs = ['-Xjsr305=strict']
+		jvmTarget = '1.8'
+	}
 }
 
 idea {

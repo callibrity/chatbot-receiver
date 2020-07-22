@@ -5,25 +5,27 @@ import com.github.callibrity.chatbotreceiver.response.Error as ApiError
 import com.github.callibrity.chatbotreceiver.response.Meta
 import io.grpc.Status
 import io.grpc.StatusException
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.context.request.WebRequest
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class GlobalErrorHandler: ResponseEntityExceptionHandler() {
+class GlobalErrorHandler {
+
+		private val logger = LoggerFactory.getLogger(GlobalErrorHandler::class.java)
 
     @ExceptionHandler(StatusException::class)
     fun handleStatusRuntimeException(
         ex: StatusException,
-        request: WebRequest
+        request: ServerHttpRequest
     ): ResponseEntity<Any> = ex
         .message
         .also {
-            logger.info("Error message: $this")
-            logger.error(ex.printStackTrace())
+            logger.info("Error message: $it")
+            logger.info("Error uri: ${request.uri}")
         }
         .run {
           handleException(ex)

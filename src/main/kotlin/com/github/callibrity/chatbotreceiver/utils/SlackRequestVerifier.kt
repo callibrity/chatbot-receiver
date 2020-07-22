@@ -17,6 +17,8 @@ class SlackRequestVerifier(
         val hashFunc = Hashing.hmacSha256(slackConfiguration.signingSecret.toByteArray())
         val computedHash = "v0=" + hashFunc.hashBytes(baseStr).toString()
 
+        println(computedHash)
+
         return computedHash == slackSignature
     }
 }

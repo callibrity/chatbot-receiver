@@ -1,7 +1,5 @@
 server:
   port: 8000
-  servlet:
-    context-path: /chatbot
 
 slack:
   signing-secret: \${SLACK_SIGNING_SECRET}
@@ -10,6 +8,8 @@ slack:
 spring:
   main:
     allow-bean-definition-overriding: true
+  webflux:
+    base-path: /chatbot
 
 ---
 spring.profiles: default
@@ -23,7 +23,7 @@ grpc:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     com.github.callibrity.chatbotreceiver: DEBUG
 
 ---

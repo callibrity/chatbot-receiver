@@ -13,7 +13,7 @@ data class Event(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class SlackBotEventRequest (
-    val type: String,
+    val type: String?,
     val challenge: String?,
     val event: Event?
 )

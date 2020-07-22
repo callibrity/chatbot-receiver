@@ -1,20 +1,22 @@
 package com.github.callibrity.chatbotreceiver.grpc.client
 
+import com.github.callibrity.chatbotreceiver.config.GrpcConfiguration
 import com.github.callibrity.chatbotreceiver.request.slack.Event
 import com.proto.chatbot.ChatbotRequest
 import com.proto.chatbot.ChatbotResponse
 import com.proto.chatbot.ChatbotServiceGrpcKt
 import com.proto.chatbot.HeartBeat
 import io.grpc.*
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
+@Component
 class ChatBotClient(
-	val channel: ManagedChannel
+	grpcConfiguration: GrpcConfiguration
 ) {
 	private val logger = LoggerFactory.getLogger(ChatBotClient::class.java)
-	private val stub = ChatbotServiceGrpcKt.ChatbotServiceCoroutineStub(channel)
+	private val stub = ChatbotServiceGrpcKt.ChatbotServiceCoroutineStub(grpcConfiguration.channel)
 	private val filterRegex = Regex("<[@a-zA-Z0-9]*>")
 	private val chatbotRequestBuilder = ChatbotRequest.newBuilder()
 	private val heartBeatRequestBuilder = HeartBeat.newBuilder()
@@ -23,7 +25,7 @@ class ChatBotClient(
 		private const val DEADLINE = 6000L
 	}
 
-	fun chat(event: Event): ChatbotResponse = runBlocking {
+	suspend fun chat(event: Event): ChatbotResponse =
 		chatbotRequestBuilder
 			.also { logger.info("User: ${event.user}, Channel: ${event.channel}") }
 			.setQuestion(filterRegex.replace(event.text ?: "Hi.", ""))
@@ -36,9 +38,8 @@ class ChatBotClient(
 				).chat(request)
 			}
 			.apply { logger.info("Bot responded with: $answer") }
-	}
 
-	fun chat(msg: String): ChatbotResponse = runBlocking {
+	suspend fun chat(msg: String): ChatbotResponse =
 		chatbotRequestBuilder
 			.also { logger.info("Chat message: $msg") }
 			.setQuestion(msg)
@@ -49,13 +50,12 @@ class ChatBotClient(
 				).chat(request)
 			}
 			.apply { logger.info("Bot responded with: $answer") }
-	}
 
-	fun heartBeat(): String = runBlocking {
+	suspend fun heartBeat(): String {
 		val randomNumber =  (Int.MIN_VALUE..Int.MAX_VALUE).random()
 		val heartBeat = heartBeatRequestBuilder.setNumber(randomNumber).build()
 
-		try {
+		return try {
 			val responseHeartBeat = stub.withDeadline(
 				Deadline.after(DEADLINE + 5000, TimeUnit.SECONDS)
 			).heartBeat(heartBeat)
