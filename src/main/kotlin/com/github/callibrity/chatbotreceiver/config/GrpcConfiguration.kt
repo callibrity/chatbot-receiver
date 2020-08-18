@@ -23,19 +23,21 @@ class ChatbotServiceProperties {
 @Configuration
 @ConfigurationProperties("grpc.chatbot-client-properties")
 class ChatbotClientProperties {
-    lateinit var threadpool: String
+    var threadpool: String? = null
 }
 
 @Configuration
 class GrpcConfiguration(
-    private val chatbotServiceProperties: ChatbotServiceProperties,
-    private val chatbotClientProperties: ChatbotClientProperties
+    chatbotServiceProperties: ChatbotServiceProperties,
+    chatbotClientProperties: ChatbotClientProperties
 ) {
 
     private val logger = LoggerFactory.getLogger(GrpcConfiguration::class.java)
 
-    private var dispatcher: ExecutorCoroutineDispatcher = Executors
-      .newFixedThreadPool(chatbotClientProperties.threadpool.toInt())
+    private val dispatcher: ExecutorCoroutineDispatcher = Executors
+      .newFixedThreadPool(
+        chatbotClientProperties.threadpool?.toInt() ?: Runtime.getRuntime().availableProcessors() + 1
+      )
       .asCoroutineDispatcher()
 
     var channel: ManagedChannel = ManagedChannelBuilder

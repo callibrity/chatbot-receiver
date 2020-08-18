@@ -26,7 +26,7 @@ spec:
       containers:
         - name: chatbot-receiver
           # e.g. aiqingyuyan/chatbot-receiver:v0.0.2
-          image: <image placeholder>
+          image: aiqingyuyan/chatbot-receiver:v0.0.3-fix
           env:
           - name: SLACK_SIGNING_SECRET
             value: $SLACK_SIGNING_SECRET
