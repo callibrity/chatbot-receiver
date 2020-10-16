@@ -1,0 +1,79 @@
+basePath: /chatbot
+definitions:
+  request.SimpleChatRequest:
+    properties:
+      message:
+        type: string
+    type: object
+  response.ApiError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  response.ApiResponse:
+    properties:
+      data:
+        type: object
+      error:
+        $ref: '#/definitions/response.ApiError'
+        type: object
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a simple swagger api to interact with chatbot.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Chatbot API
+  version: "1.0"
+paths:
+  /api/health:
+    get:
+      description: send a heartbeat to bot to check bot health
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ApiResponse'
+      summary: Send heartBeat to bot
+  /api/test/chatMessage:
+    post:
+      consumes:
+      - application/json
+      description: start a simple conversation with bot
+      parameters:
+      - description: Simple chat request
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/request.SimpleChatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ApiResponse'
+      summary: Chat with bot
+swagger: "2.0"
