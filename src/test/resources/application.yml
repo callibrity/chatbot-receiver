@@ -1,9 +1,0 @@
-spring:
-  main:
-    allow-bean-definition-overriding: true
-  webflux:
-    base-path: /chatbot
-
-slack:
-  signing-secret: \${SLACK_SIGNING_SECRET}
-  bot-user-oauth-acces-token: \${BOT_USER_OAUTH_ACCESS_TOKEN}
