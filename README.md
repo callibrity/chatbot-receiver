@@ -1,10 +1,10 @@
 # Chatbot Receiver
 
-Receiver (Edging) layer for [chatbot service](https://github.com/callibrity/chatbot-service) (including but not limited to):
+Edge (Receiver) layer for [chatbot service](https://github.com/callibrity/chatbot-service) (including but not limited to):
 
 - Request coming from Slack
 
-Developed using spring boot starter with Grpc.
+Developed using [Gin](https://github.com/gin-gonic/gin) framework and [Grpc](https://github.com/grpc/grpc-go).
 
 ## Environment variable
 
@@ -16,20 +16,32 @@ To run locally, 2 environment variables have to be set up
 You should be able to get them from slack bot setting page.
 
 ## Start up
+### Prerequisite
+- [Golang](https://golang.org/doc/install)
+- [Protobuf Complier](https://grpc.io/docs/protoc-installation/)
+- [Go plugin](https://grpc.io/docs/protoc-installation/) for protobuf
 
-Once all dependances are installed, you can run the following command to start up the service locally,
-
+### Install modules
 ```bash
-./gradlew bootRun
+go mod install
 ```
 
-or open project from Intellij, and start it from there.
+### Run application
+Once all modules are installed, you can run the following command to start up the server locally,
+
+```bash
+go run main.go
+```
+
+or open project from Goland/Intellij (golang extension is needed), and start it from there. This will start
+servert with `default` profile.
 
 ## Build docker image & run
 
 To build a docker image, just run stand build command, you don't need to pass in the environment variables at build time.
 
-Tu run the container you have ro specify these 2 environment variables, by passing `-e SLACK_SIGNING_SECRET=<value> -e BOT_USER_OAUTH_ACCESS_TOKEN=$<value>` to the `docker run` command.
+Tu run the container you have ro specify these 2 environment variables, by passing
+`-e SLACK_SIGNING_SECRET=<value> -e BOT_USER_OAUTH_ACCESS_TOKEN=$<value>` to the `docker run` command.
 
 ## Deploymentment
 

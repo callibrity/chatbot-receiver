@@ -8,7 +8,7 @@ spec:
     - name: chatbot-receiver-gateway
       port: 80
       protocol: TCP
-      targetPort: 8000
+      targetPort: 8080
   selector:
     app: chatbot-receiver-gateway
 ---
@@ -26,11 +26,11 @@ spec:
       containers:
         - name: chatbot-receiver
           # e.g. aiqingyuyan/chatbot-receiver:v0.0.2
-          image: aiqingyuyan/chatbot-receiver:v0.0.3-fix
+          image: aiqingyuyan/chatbot-receiver:v0.1.0
           env:
-          - name: SLACK_SIGNING_SECRET
-            value: $SLACK_SIGNING_SECRET
-          - name: BOT_USER_OAUTH_ACCESS_TOKEN
-            value: $BOT_USER_OAUTH_ACCESS_TOKEN
+            - name: SLACK_SIGNING_SECRET
+              value: $SLACK_SIGNING_SECRET
+            - name: BOT_USER_OAUTH_ACCESS_TOKEN
+              value: $BOT_USER_OAUTH_ACCESS_TOKEN
           ports:
-            - containerPort: 8000
+            - containerPort: 8080

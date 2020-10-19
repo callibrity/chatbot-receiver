@@ -1,14 +1,28 @@
-FROM openjdk:8
+FROM golang:1.14
 
+# environment variables for go
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GIN_MODE=release
+
+# environment variables for app
 ENV SLACK_SIGNING_SECRET=
 ENV BOT_USER_OAUTH_ACCESS_TOKEN=
 
-ENV spring_profiles_active=test
+WORKDIR /build
+COPY . .
 
-EXPOSE 8000
+RUN go mod download
+RUN go build -o app .
 
-COPY build/libs/chatbot-receiver.jar /app/chatbot-receiver.jar
+WORKDIR /dist
+COPY resources/application.yml ./resources/application.yml
 
-WORKDIR /app/
+RUN cp /build/app .
+RUN rm -rf /build
 
-CMD ["java", "-jar", "chatbot-receiver.jar"]
+EXPOSE 8080
+
+CMD ["/dist/app", "--profile", "test"]

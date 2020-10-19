@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  base-path: /chatbot
+
+slack:
+  signing-secret: ${SLACK_SIGNING_SECRET}
+  bot-user-oauth-access-token: ${BOT_USER_OAUTH_ACCESS_TOKEN}
+
+grpc:
+  chatbot-service-properties:
+    port: 50051
+    # unit: sec
+    timeout: 5
+
+---
+profile: default
+
+logging:
+  level: DEBUG
+
+grpc:
+  chatbot-service-properties:
+    host: localhost
+
+---
+profile: test
+
+logging:
+  level: INFO
+
+grpc:
+  chatbot-service-properties:
+    host: chatbot-service.default
+    timeout: 2
