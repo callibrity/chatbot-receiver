@@ -19,7 +19,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install dependencies
-      run: go mod downloa
+      run: go mod download
 
     - name: Run Unit Test
       run: go test -v ./...
@@ -49,7 +49,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/chatbot-receiver:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/chatbot-receiver:$GITHUB_SHA
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
