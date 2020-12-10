@@ -53,7 +53,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: $USERNAME/chatbot-receiver:$GITHUB_SHA
+        tags: ${{ USERNAME }}/chatbot-receiver:${{ GITHUB_SHA }}
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
