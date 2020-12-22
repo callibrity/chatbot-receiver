@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-receiver-gateway
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: chatbot-receiver-gateway
+    spec:
+      containers:
+        - name: chatbot-receiver
+          image: aiqingyuyan/chatbot-receiver:TAG
+          env:
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: slack_signing_secret
+                  name: slack
+            - name: BOT_USER_OAUTH_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: bot_user_oauth_access_token
+                  name: slack
+          ports:
+            - containerPort: 8080

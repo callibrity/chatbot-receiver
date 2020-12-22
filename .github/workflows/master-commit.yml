@@ -1,4 +1,4 @@
-name: Master Commit
+name: Commit to master
 
 on:
   push:
@@ -37,7 +37,6 @@ jobs:
       uses: crazy-max/ghaction-docker-meta@v1
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/chatbot-receiver
-        tag-sha: true
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
