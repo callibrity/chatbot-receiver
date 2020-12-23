@@ -45,13 +45,4 @@ Tu run the container you have ro specify these 2 environment variables, by passi
 
 ## Deploymentment
 
-There is a kubernetes depolyment file `chatbot-receiver.yaml` which can be used to deploy it into GKE.
-To use it replace the `image` field with the image tag you build. There is an example (commented out) in it.
-Also make sure the environment where you try to deploy from using `kubectl` has the environment variables mentioned above setup.
-Then you can use the following command to deploy:
-
-```bash
-envsubst < chatbot-receiver.yaml | kubectl apply -f -
-```
-
-Make sure `envsubst` in installed before you run it.
+The deployment is handled by github action as described in the `master-tag.yml` file under `.github/workflows` folder.
